@@ -45,6 +45,8 @@ df['Presion_Arterial'] = pd.to_numeric(df['Presion_Arterial'], errors='coerce') 
 df['Glucosa'] = pd.to_numeric(df['Glucosa'], downcast='integer', errors='coerce') # Convertir a entero, convirtiendo los valores no numéricos a NaN
 df['Edad'] = pd.to_numeric(df['Edad'], downcast='integer', errors='coerce')
 
+df['Glucosa'] = df['Glucosa'].apply(lambda x: 1 if x > 126 else 0)
+
 df.dropna(inplace=True) # Eliminar filas con valores no numéricos después de la conversión
 
 df.to_clipboard() # Copia el DataFrame limpio al portapapeles para pegarlo 
