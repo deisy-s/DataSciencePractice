@@ -1,18 +1,25 @@
+# EXPLICACIÓN ----------------------------------------------------------------------------------------------
+# Se grafica primero una serie de tiempo de ventas x tiempo
+# Se aplica un modelo ARIMA para realizar la predicción de ventas futuras
+
+# LIBRERÍAS ------------------------------------------------------------------------------------------------
 # Importar librerías necesarias
-import pandas as pd 
-import numpy as np 
-import matplotlib.pyplot as plt 
-from pandas.plotting import autocorrelation_plot 
-from statsmodels.tsa.arima.model import ARIMA
+import pandas as pd # Para manipulación de datos
+import matplotlib.pyplot as plt # Para graficación
+from pandas.plotting import autocorrelation_plot # Para graficar la autocorrelación de la serie de tiempo
+from statsmodels.tsa.arima.model import ARIMA # Para crear y entrenar el modelo ARIMA
  
+# CARGA Y ANÁLISIS DE DATOS --------------------------------------------------------------------------------
 # Cargar los datos
 df = pd.read_csv("Documents/VentasP3.csv") 
 
+# Crear una variable nueva, Tiempo, que combina el año y mes
 df["Tiempo"] = df["Año"] * 12 + df["Mes"] 
 
 # Mostrar las primeras filas del df e información general del dataset 
 print(df.head()) 
 
+# GRAFICACIÓN SERIE DE TIEMPO UNIVARIADA -------------------------------------------------------------------
 # Graficar la serie de tiempo de ventas
 plt.figure(figsize=(10,5)) 
 
@@ -24,6 +31,7 @@ plt.ylabel("Ventas")
 plt.grid() 
 plt.show() 
  
+# CREAR LAGS FEATURES --------------------------------------------------------------------------------------
 # Crear lags features (valores rezagados)
 df["Ventas_lag1"] = df["Ventas"].shift(1) # Ventas del mes pasado
 df["Ventas_lag2"] = df["Ventas"].shift(2) # Ventas de hace dos meses
@@ -45,11 +53,11 @@ autocorrelation_plot(df["Ventas"])
 plt.title("Autocorrelación de ventas") 
 plt.show() 
  
-# Modelo ARIMA
+# MODELO ARIMA ---------------------------------------------------------------------------------------------
 
 # Usar solo la serie 
 serie = df["Ventas"] 
- 
+
 modelo_arima = ARIMA(serie, order=(2,1,2)) # Crear modelo ARIMA 
  
 modelo_arima_fit = modelo_arima.fit() # Entrenar el modelo ARIMA con la serie de ventas
@@ -57,12 +65,15 @@ modelo_arima_fit = modelo_arima.fit() # Entrenar el modelo ARIMA con la serie de
 print(modelo_arima_fit.summary()) # Imprimir resumen del modelo ARIMA entrenado
  
 # Forecasting con ARIMA 
+# steps=3 indica que se quieren predecir los próximos 3 meses después del último dato disponible
 predicciones = modelo_arima_fit.forecast(steps=3) 
 
+# Imprimir las predicciones futuras
 print("\nPredicciones futuras:") 
 print(predicciones)
 
-# Graficar resultados reales y predicciones futuras
+# GRAFICACIÓN ----------------------------------------------------------------------------------------------
+# Graficar resultados reales y predicciones futuras por ARIMA
 plt.figure(figsize=(10,6)) 
 
 plt.plot(df["Tiempo"], df["Ventas"], label="Histórico")  # Datos reales 

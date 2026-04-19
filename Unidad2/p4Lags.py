@@ -1,12 +1,16 @@
+# EXPLICACIÓN ----------------------------------------------------------------------------------------------
+# Se crean LAGS features para entrenar modelos de regresión lineal y random forest
+
+# LIBRERÍAS ------------------------------------------------------------------------------------------------
 # Importar librerías necesarias
-import pandas as pd 
-import numpy as np 
-import matplotlib.pyplot as plt  
-from sklearn.linear_model import LinearRegression 
-from sklearn.ensemble import RandomForestRegressor 
-from sklearn.model_selection import train_test_split 
-from sklearn.metrics import mean_squared_error, r2_score 
+import pandas as pd # Para manipulación de datos
+import matplotlib.pyplot as plt # Para graficación
+from sklearn.linear_model import LinearRegression # Para modelo de regresión lineal
+from sklearn.ensemble import RandomForestRegressor # Para modelo de regresión Random Forest
+from sklearn.model_selection import train_test_split # Para dividir el dataset en entrenamiento y prueba
+from sklearn.metrics import mean_squared_error, r2_score # Para evaluar el desempeño de los modelos de regresión
  
+# CARGA Y ANÁLISIS DE DATOS --------------------------------------------------------------------------------
 # Cargar los datos
 df = pd.read_csv("Documents/VentasP3.csv") 
 
@@ -18,14 +22,17 @@ print("\nInformación del dataset:")
 print(df.info()) 
  
 # Convertir la  columna Temporada a valores numericos 
+# Se realiza por medio de un mapeo
 df["Temporada"] = df["Temporada"].map({ 
     "Baja": 0, 
     "Media": 1, 
     "Alta": 2 
 }) 
 
+# El dataset no cuenta con un id único, por lo cual se crea una columna nueva con esto
 df["Tiempo"] = df["Año"] * 12 + df["Mes"] 
  
+# LAGS FEATURES --------------------------------------------------------------------------------------------
 # Crear lags features (valores rezagados)
 # Desplaza una columna una fila hacia abajo. El valor de la fila actual recibe el valor de la fila anterior 
 # Por eso aparecen valores vacíos al inicio 
@@ -39,7 +46,7 @@ print(df.head(10))
 # Eliminar nulos
 df = df.dropna() 
  
-# Graficar nulos
+# Graficar la serie de tiempo univariada
 plt.figure(figsize=(10,5)) 
 
 plt.plot(df["Tiempo"], df["Ventas"], marker="o") 
@@ -50,18 +57,9 @@ plt.ylabel("Ventas")
 plt.grid() 
 plt.show() 
  
+# CREACIÓN DE MODELOS DE REGRESIÓN LINEAL Y RANDOM FOREST --------------------------------------------------
 # Definir las variables para el train test 
-X = df[[ 
-    "Tiempo", 
-    "Precio", 
-    "Publicidad", 
-    "Descuento", 
-    "Clientes", 
-    "Temporada", 
-    "Ventas_lag1", 
-    "Ventas_lag2" 
-]] 
- 
+X = df[["Tiempo", "Precio", "Publicidad", "Descuento", "Clientes", "Temporada", "Ventas_lag1", "Ventas_lag2"]] 
 y = df["Ventas"] 
  
 # Dividir los datos en entrenamiento y prueba, sin mezclar el orden temporal (shuffle=False)
@@ -69,15 +67,15 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, shuffl
  
 # Modelo lineal con lags
 modelo_lineal = LinearRegression() 
-modelo_lineal.fit(X_train, y_train) 
-pred_lineal = modelo_lineal.predict(X_test) 
+modelo_lineal.fit(X_train, y_train) # Entrenar el modelo con los datos de entrenamiento
+pred_lineal = modelo_lineal.predict(X_test) # Hacer predicciones con el modelo entrenado
  
 # Modelo random forest con lags 
 modelo_rf = RandomForestRegressor(n_estimators=100, random_state=42) 
-modelo_rf.fit(X_train, y_train) 
-pred_rf = modelo_rf.predict(X_test) 
+modelo_rf.fit(X_train, y_train) # Entrenar el modelo con los datos de entrenamiento
+pred_rf = modelo_rf.predict(X_test) # Hacer predicciones con el modelo entrenado
  
-# Evaluar modelos con métricas MSE y R2
+# Evaluar los modelos con métricas MSE y R2
 def evaluar_modelo(y_real, y_pred, nombre): 
     print(f"\n--- {nombre} ---") 
     print("MSE:", mean_squared_error(y_real, y_pred)) 
@@ -86,7 +84,9 @@ def evaluar_modelo(y_real, y_pred, nombre):
 evaluar_modelo(y_test, pred_lineal, "Regresión Lineal con Lags") 
 evaluar_modelo(y_test, pred_rf, "Random Forest con Lags") 
  
+# PREDICCIÓN FUTURA ----------------------------------------------------------------------------------------
 # Predicción futura con ambos modelos
+# Se crea un DataFrame con características para el mes futuro que se quiere predecir
 futuro = pd.DataFrame({ 
     "Tiempo": [2025*12 + 1], 
     "Precio": [95], 
@@ -106,6 +106,7 @@ print("\nPredicción futura:")
 print("Regresión Lineal:", pred_lineal_fut[0]) 
 print("Random Forest:", pred_rf_fut[0]) 
  
+# GRAFICACIÓN ----------------------------------------------------------------------------------------------
 # Gráfica final con datos reales, predicciones y forecasting futuro
 plt.figure(figsize=(12,6)) 
  
