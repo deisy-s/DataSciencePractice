@@ -2,6 +2,23 @@
 # Se grafica primero una serie de tiempo de ventas x tiempo
 # Se aplica un modelo ARIMA para realizar la predicción de ventas futuras
 
+# ARIMA: Es un modelo estadístico para series de tiempo
+# AR (AutoRegressive/AutoRegresivo): El valor actual depende de sus valores pasados (lags)
+# I (Integrated/Integrado): Se elimina tendencia
+# MA (Moving Average/Media móvil): El valor actual depende de los errores pasados del modelo
+
+# ARIMA(order=(p,d,q))
+# p: número de términos autoregresivos (lags)
+# d: número de diferencias necesarias para hacer la serie estacionaria (eliminar tendencia)
+# q: número de términos de media móvil (errores pasados)
+
+# ARIMA hace uso de:
+# Series de tiempo: base del análisis, es una secuencia de datos ordenados en el tiempo, cada punto es un valor en un tiempo específico
+# Forecasting: Es el proceso de hacer predicciones sobre eventos futuros en base de datos históricos y análisis de tendencias actuales
+# Lags: Se utilizan valores pasados de la variable objetivo como características para predecir el valor actual o futuro
+# Correlación: mide la relación entre dos variables, valores cercanos a 1 indican alta relación, valores cercanos a 0 indican baja relación
+# Autocorrelación: detecta patrones temporales en la serie de tiempo, muestra cómo se relaciona la serie consigo misma en diferentes rezagos (lags)
+
 # LIBRERÍAS ------------------------------------------------------------------------------------------------
 # Importar librerías necesarias
 import pandas as pd # Para manipulación de datos
@@ -42,12 +59,14 @@ df = df.dropna()
 # Imprimir correlación entre ventas y lags
 # Valores cercanos a 1 alta relación 
 # Valores  cercanos a 0 baja relacion  
+# La correlación mide la relación entre dos variables
 print("\nCorrelación:") 
 print(df[["Ventas", "Ventas_lag1", "Ventas_lag2"]].corr()) 
 
 # Graficar autocorrelación
 plt.figure(figsize=(8,5)) 
 
+# La autocorrelación detecta patrones temporales en la serie de tiempo
 autocorrelation_plot(df["Ventas"]) 
 
 plt.title("Autocorrelación de ventas") 

@@ -2,6 +2,8 @@
 # Se grafica primero una serie de tiempo univariada de ventas x mes
 # Se aplica un modelo de regresión lineal y polinomial para realizar la predicción de ventas futuras
 
+# Serie de tiempo: Una secuencia de datos ordenados en el tiempo, cada punto es un valor en un tiempo específico
+
 # LIBRERÍAS ------------------------------------------------------------------------------------------------
 # Importar las librerías necesarias
 import pandas as pd # Para manipulación de datos

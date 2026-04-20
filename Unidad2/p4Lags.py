@@ -1,6 +1,14 @@
 # EXPLICACIÓN ----------------------------------------------------------------------------------------------
 # Se crean LAGS features para entrenar modelos de regresión lineal y random forest
 
+# LAGS: Se utilizan valores pasados de la variable objetivo como características para predecir el valor actual 
+# o futuro
+# Ej: para predecir las ventas de un mes, se pueden usar las ventas del mes pasado (lag1) y de hace dos meses (lag2) 
+# como características adicionales, para ayudar a capturar patrones temporales en los datos
+
+# Forecasting: Es el proceso de hacer predicciones sobre eventos futuros en base de datos históricos y 
+# análisis de tendencias actuales
+
 # LIBRERÍAS ------------------------------------------------------------------------------------------------
 # Importar librerías necesarias
 import pandas as pd # Para manipulación de datos
