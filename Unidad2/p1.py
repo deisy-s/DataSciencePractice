@@ -26,7 +26,7 @@ print("\nEstadistica descriptiva")
 # df.describe muestra 8 datos:
 # count: La cantidad de valores no nulos en cada columna
 # mean: El promedio de cada columna
-# std: La desviación estándas o variabilidad de los datos 
+# std: La desviación estándar o variabilidad de los datos 
 # min: El valor menor de cada columna
 # 25%: Percentil
 # 50%: Percentil

@@ -1,3 +1,9 @@
+# EXPLICACIÓN ----------------------------------------------------------------------------------------------
+# Se muestra primero una serie de tiempo univariada de demanda por el tiempo, y multivariada de demanda y temperatura
+# Se crear LAGS features para entrenar los modelos de regresión lineal y random forest
+# Se entrena el modelo ARIMA
+
+# LIBRERÍAS ------------------------------------------------------------------------------------------------    
 # Importar librerías necesarias
 import pandas as pd 
 import matplotlib.pyplot as plt  
@@ -8,6 +14,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 from pandas.plotting import autocorrelation_plot 
 from statsmodels.tsa.arima.model import ARIMA
  
+# CARGA Y ANÁLISIS DE DATOS --------------------------------------------------------------------------------
 # Cargar los datos
 df = pd.read_csv("Documents/Energia.csv") 
 
@@ -42,6 +49,7 @@ plt.grid(True, alpha=0.3)
 plt.tight_layout() 
 plt.show() 
 
+# LAGS -----------------------------------------------------------------------------------------------------
 # Crear lags features (valores rezagados)
 # Desplaza una columna una fila hacia abajo. El valor de la fila actual recibe el valor de la fila anterior 
 # Por eso aparecen valores vacíos al inicio 
@@ -80,6 +88,7 @@ plt.ylabel("Demanda")
 plt.grid() 
 plt.show() 
  
+# CREACIÓN DE MODELOS DE REGRESIÓN LINEAL Y RANDOM FOREST --------------------------------------------------
 # Definir las variables para el train test 
 X = df[[ 
     "Tiempo", 
@@ -112,6 +121,7 @@ def evaluar_modelo(y_real, y_pred, nombre):
 evaluar_modelo(y_test, pred_lineal, "Regresión Lineal con Lags") 
 evaluar_modelo(y_test, pred_rf, "Random Forest con Lags") 
  
+# PREDICCIÓN FUTURA ----------------------------------------------------------------------------------------
 # Predicción futura con ambos modelos
 futuro = pd.DataFrame({ 
     "Tiempo": [2025*12 + 1], 
@@ -128,6 +138,7 @@ print("\nPredicción futura:")
 print("Regresión Lineal:", pred_lineal_fut[0]) 
 print("Random Forest:", pred_rf_fut[0]) 
  
+# GRAFICACIÓN ----------------------------------------------------------------------------------------------
 # Gráfica final con datos reales, predicciones y forecasting futuro
 plt.figure(figsize=(12,6)) 
  
@@ -146,10 +157,7 @@ plt.legend()
 plt.grid() 
 plt.show()
 
-# ------------------------------------------------------------------
-# ARIMA
-# ------------------------------------------------------------------
-
+# ARIMA ----------------------------------------------------------------------------------------------------
 # Usar solo la serie 
 serie = df["Demanda_MW"] 
  
@@ -165,6 +173,7 @@ predicciones = modelo_arima_fit.forecast(steps=3)
 print("\nPredicciones futuras:") 
 print(predicciones)
 
+# GRAFICACIÓN ----------------------------------------------------------------------------------------------
 # Graficar resultados reales y predicciones futuras
 plt.figure(figsize=(10,6)) 
 
